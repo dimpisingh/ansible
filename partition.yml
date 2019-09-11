@@ -1,0 +1,45 @@
+---
+ - hosts: rhevm.lab.example.com
+   user: root
+   tasks:
+        - name: vg0 volume group creation
+          lvg:
+               vg: vg0
+               pvs: /dev/sda
+
+        - name: lv0 lvm creation
+          lvol:
+               vg: vg0
+               lv: lv0
+               size: 10M
+
+        - name: db01 lvm creation
+          lvol:
+               vg: vg0
+               lv: lv1
+               size: 10M
+
+        - name: create file system for lv0
+          filesystem:
+                fstype: ext4
+                dev: /dev/vg0/lv0
+
+        - name: create file system for lv1
+          filesystem:
+                fstype: ext4
+                dev: /dev/vg1/lv1
+
+        
+        - name: mount lv0 logical volumes
+          mount:
+                name: /mount_here1
+                src: /dev/vg0/lv0
+                fstype: ext4
+                state: mounted
+
+        - name: mount lv1 logical volumes
+          mount:
+                name: /mount_here2
+                src: /dev/vg1/lv1
+                fstype: ext4
+                state: mounted  
